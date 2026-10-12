@@ -22,6 +22,7 @@ unsigned long last_sampling_time;   // unit: msec
 float dist_ema= 0;                     // EMA distance
 float dist_median = 0;
 float values[N];
+int count = 0;
 
 void setup() {
   // initialize GPIO pins
@@ -50,7 +51,12 @@ void loop() {
   dist_ema = _EMA_ALPHA*dist_median + (1-_EMA_ALPHA)*dist_ema;
 
   Queue(N, values, dist_raw);
-  dist_median = Median(N, values);
+  if (count < N) {
+    count++;
+  }
+  else {
+    dist_median = Median(N, values);
+  }
 
   // output the distance to the serial port
   Serial.print("Min:");   Serial.print(_DIST_MIN);
